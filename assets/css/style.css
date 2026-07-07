@@ -382,9 +382,23 @@ footer {
     }
 
     .hero-content {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
+        gap: 1.5rem;
     }
+    
+    .hero-text, .hero-image {
+        display: contents;
+    }
+    
+    .hero-text h1 { order: 1; margin-bottom: 0; }
+    .hero-text h2 { order: 2; margin-bottom: 0; }
+    .avatar-wrapper { order: 3; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+    #profile-about { order: 4; margin-bottom: 0 !important; }
+    .hero-text > div { order: 5; justify-content: center; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 1rem; }
+    .video-wrapper { order: 6; }
     
     .nav-links {
         display: none;
@@ -435,11 +449,6 @@ footer {
     .timeline-item:nth-child(even)::after {
         left: 21px;
         right: auto;
-    }
-    
-    .hero-text > div {
-        justify-content: center;
-        flex-wrap: wrap;
     }
 }
 
