@@ -3,24 +3,18 @@ name: Deploy static content to Pages
 on:
   push:
     branches: ["master"]
+  workflow_dispatch: # Giúp bạn có thể bấm nút "Run workflow" bằng tay trong tab Actions
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
@@ -29,13 +23,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # --- BỔ SUNG CÁC BƯỚC CHO DỰ ÁN NODE.JS/VITE ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22 # Sử dụng Node.js 22 LTS mới nhất để tránh cảnh báo (warning)
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+      # -----------------------------------------------
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      # SỬA LẠI ĐƯỜNG DẪN PATH
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # Thay vì '.' (đẩy toàn bộ repo gồm cả code nguồn), 
+          # ta chỉ đẩy thư mục đã build xong (thường là 'dist' đối với Vite hoặc 'build' với CRA)
+          path: './dist' 
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
