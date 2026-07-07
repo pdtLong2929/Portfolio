@@ -50,7 +50,7 @@ a {
     font-size: 2.5rem;
     color: var(--primary-color);
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     position: relative;
     font-weight: 700;
 }
@@ -147,7 +147,7 @@ nav {
 
 /* Sections */
 section {
-    padding: 100px 0;
+    padding: 60px 0;
 }
 
 /* Hero Section */
@@ -390,6 +390,10 @@ footer {
 
 /* Responsive */
 @media (max-width: 992px) {
+    section {
+        padding: 40px 0;
+    }
+
     .hero {
         height: auto;
         max-height: none;
