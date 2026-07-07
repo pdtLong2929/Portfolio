@@ -71,11 +71,9 @@ function renderProfile(profile) {
 
     // Set CV button
     const btnCv = document.getElementById('btn-view-cv');
-    if (profile.cvUrl && profile.cvUrl.trim() !== '') {
-        btnCv.href = profile.cvUrl;
-        btnCv.style.display = 'flex'; // It uses flex layout inline
-    } else {
-        if (btnCv) btnCv.style.display = 'none';
+    if (btnCv) {
+        btnCv.style.display = 'flex';
+        btnCv.href = (profile.cvUrl && profile.cvUrl.trim() !== '') ? profile.cvUrl : '#';
     }
 }
 

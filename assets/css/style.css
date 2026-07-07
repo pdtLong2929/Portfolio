@@ -168,26 +168,38 @@ section {
     align-items: center;
 }
 
-.hero-text h1 {
+.hero-title, .hero-subtitle, .hero-about, .hero-buttons {
+    grid-column: 1;
+}
+
+.avatar-wrapper, .video-wrapper {
+    grid-column: 2;
+}
+
+.hero-title {
     font-size: 3.5rem;
     line-height: 1.2;
     margin-bottom: 1rem;
 }
 
-.hero-text h1 span {
+.hero-title span {
     color: var(--primary-color);
 }
 
-.hero-text h2 {
+.hero-subtitle {
     font-size: 1.5rem;
     color: var(--text-muted);
     margin-bottom: 1.5rem;
     font-weight: 400;
 }
 
-.hero-image {
-    text-align: center;
-    position: relative;
+.hero-about {
+    margin-bottom: 2rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
 }
 
 .avatar-wrapper {
@@ -286,7 +298,8 @@ section {
     content: '';
     position: absolute;
     width: 4px;
-    background: var(--primary-light);
+    background: var(--primary-color);
+    opacity: 0.5;
     top: 0;
     bottom: 0;
     left: 50%;
@@ -389,15 +402,11 @@ footer {
         gap: 1.5rem;
     }
     
-    .hero-text, .hero-image {
-        display: contents;
-    }
-    
-    .hero-text h1 { order: 1; margin-bottom: 0; }
-    .hero-text h2 { order: 2; margin-bottom: 0; }
+    .hero-title { order: 1; margin-bottom: 0; font-size: 2.2rem; }
+    .hero-subtitle { order: 2; margin-bottom: 0; }
     .avatar-wrapper { order: 3; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-    #profile-about { order: 4; margin-bottom: 0 !important; }
-    .hero-text > div { order: 5; justify-content: center; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 1rem; }
+    .hero-about { order: 4; margin-bottom: 0 !important; }
+    .hero-buttons { order: 5; justify-content: center; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 1rem; }
     .video-wrapper { order: 6; }
     
     .nav-links {
@@ -453,9 +462,6 @@ footer {
 }
 
 @media (max-width: 576px) {
-    .hero-text h1 {
-        font-size: 2.2rem;
-    }
     .avatar-wrapper {
         width: 200px;
         height: 200px;
