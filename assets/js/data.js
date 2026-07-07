@@ -3,7 +3,7 @@ const defaultData = {
         name: "Nguyễn Văn A",
         title: "Sinh viên Truyền thông Đa phương tiện",
         about: "Xin chào! Mình là sinh viên chuyên ngành Truyền thông Đa phương tiện với niềm đam mê sáng tạo nội dung, thiết kế đồ họa và sản xuất video. Luôn mong muốn mang đến những sản phẩm độc đáo và có giá trị.",
-        avatar: "https://via.placeholder.com/150",
+        avatar: "https://ui-avatars.com/api/?name=Nguyễn+Văn+A&background=ff6b81&color=fff&size=150",
         logo: "assets/img/logo.png",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example video
         cvUrl: "", // PDF CV
@@ -65,6 +65,12 @@ async function getData() {
     // Migration: thêm trường security nếu chưa có
     if (data && !data.security) {
         data.security = defaultData.security;
+        shouldSave = true;
+    }
+
+    // Migration: thay thế ảnh avatar bị lỗi
+    if (data && data.profile && data.profile.avatar === "https://via.placeholder.com/150") {
+        data.profile.avatar = "https://ui-avatars.com/api/?name=Nguyễn+Văn+A&background=ff6b81&color=fff&size=150";
         shouldSave = true;
     }
 
