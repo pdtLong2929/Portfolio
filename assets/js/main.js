@@ -104,21 +104,27 @@ function renderExperience(expList) {
     
     // Sort experience by most recent first
     const sortedExpList = [...expList].sort((a, b) => {
-        const getYears = (period) => {
-            const matches = period.match(/\d{4}/g) || [];
-            let startYear = matches[0] ? parseInt(matches[0], 10) : 0;
-            let endYear = startYear;
-            if (/hiện tại|nay|now|present/i.test(period)) {
-                endYear = 9999;
-            } else if (matches[1]) {
-                endYear = parseInt(matches[1], 10);
+        const parseDate = (exp) => {
+            if (exp.startDate) {
+                // New format: YYYY-MM
+                const end = exp.endDate === 'present' ? '9999-99' : (exp.endDate || exp.startDate);
+                return { start: exp.startDate, end: end };
+            } else {
+                // Fallback for old format
+                const matches = exp.period.match(/\d{4}/g) || [];
+                let startYear = matches[0] ? matches[0] : "0000";
+                let endYear = startYear;
+                if (/hiện tại|nay|now|present/i.test(exp.period)) endYear = "9999";
+                else if (matches[1]) endYear = matches[1];
+                return { start: startYear, end: endYear };
             }
-            return { start: startYear, end: endYear };
         };
-        const aY = getYears(a.period);
-        const bY = getYears(b.period);
-        if (bY.end !== aY.end) return bY.end - aY.end;
-        return bY.start - aY.start;
+        const aDates = parseDate(a);
+        const bDates = parseDate(b);
+        if (bDates.end !== aDates.end) {
+            return bDates.end > aDates.end ? 1 : -1;
+        }
+        return bDates.start > aDates.start ? 1 : -1;
     });
     
     sortedExpList.forEach(exp => {

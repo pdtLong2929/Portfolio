@@ -177,8 +177,13 @@
                 <div class="add-new-box">
                     <h4>Thêm kinh nghiệm mới</h4>
                     <form id="add-experience-form">
-                        <div class="form-group">
-                            <input type="text" id="new-exp-period" placeholder="Thời gian (VD: 2023 - Nay)" required>
+                        <div class="form-group" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="month" id="new-exp-start" required style="flex: 1; min-width: 120px;">
+                            <span>đến</span>
+                            <input type="month" id="new-exp-end" style="flex: 1; min-width: 120px;">
+                            <label style="display: flex; align-items: center; gap: 5px; margin-bottom: 0; white-space: nowrap;">
+                                <input type="checkbox" id="new-exp-present" style="width: auto;"> Hiện tại
+                            </label>
                         </div>
                         <div class="form-group">
                             <input type="text" id="new-exp-title" placeholder="Tiêu đề / Vị trí" required>

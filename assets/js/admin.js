@@ -267,21 +267,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 6. Thêm Kinh nghiệm
+    const expPresentCheckbox = document.getElementById('new-exp-present');
+    if (expPresentCheckbox) {
+        expPresentCheckbox.addEventListener('change', function() {
+            document.getElementById('new-exp-end').disabled = this.checked;
+        });
+    }
+
     document.getElementById('add-experience-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const period = document.getElementById('new-exp-period').value;
+        const startRaw = document.getElementById('new-exp-start').value;
+        const endRaw = document.getElementById('new-exp-end').value;
+        const isPresent = document.getElementById('new-exp-present').checked;
         const title = document.getElementById('new-exp-title').value;
         const desc = document.getElementById('new-exp-desc').value;
+        
+        // Format period string
+        let period = "";
+        if (startRaw) {
+            const [sYear, sMonth] = startRaw.split('-');
+            period += `${sMonth}/${sYear}`;
+        }
+        if (isPresent) {
+            period += " - Hiện tại";
+        } else if (endRaw) {
+            const [eYear, eMonth] = endRaw.split('-');
+            period += ` - ${eMonth}/${eYear}`;
+        }
         
         appData.experience.push({
             id: Date.now(),
             period: period,
+            startDate: startRaw,
+            endDate: isPresent ? "present" : endRaw,
             title: title,
             description: desc
         });
         saveDataAndNotify(appData);
         renderAdminExperience(appData.experience);
-        e.target.reset();
+        e.target.reset(); // clear form
+        document.getElementById('new-exp-end').disabled = false;
     });
 
     // 7. Xử lý Cập nhật Bảo mật
