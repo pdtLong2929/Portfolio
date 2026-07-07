@@ -164,16 +164,42 @@ section {
 .hero-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    grid-template-areas: 
+        "title avatar"
+        "subtitle avatar"
+        "about video"
+        "buttons video";
+    column-gap: 3rem;
+    row-gap: 1.5rem;
     align-items: center;
 }
 
-.hero-title, .hero-subtitle, .hero-about, .hero-buttons {
-    grid-column: 1;
+.hero-title {
+    grid-area: title;
 }
 
-.avatar-wrapper, .video-wrapper {
-    grid-column: 2;
+.hero-subtitle {
+    grid-area: subtitle;
+}
+
+.hero-about {
+    grid-area: about;
+}
+
+.hero-buttons {
+    grid-area: buttons;
+}
+
+.avatar-wrapper {
+    grid-area: avatar;
+    justify-self: center;
+    align-self: end;
+}
+
+.video-wrapper {
+    grid-area: video;
+    justify-self: center;
+    align-self: start;
 }
 
 .hero-title {
