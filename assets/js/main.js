@@ -40,6 +40,7 @@ function renderProfile(profile) {
     // Set Theme Color
     if (profile.themeColor) {
         document.documentElement.style.setProperty('--primary-color', profile.themeColor);
+        if (typeof updateFaviconColor === 'function') updateFaviconColor(profile.themeColor);
         // Tạo hiệu ứng shadow mềm dẻo dựa trên màu HEX
         let hex = profile.themeColor.replace('#', '');
         if (hex.length === 6) {

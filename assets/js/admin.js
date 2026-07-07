@@ -214,6 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('input-theme-color').addEventListener('input', (e) => {
         const hex = e.target.value;
         document.documentElement.style.setProperty('--primary-color', hex);
+        if (typeof updateFaviconColor === 'function') updateFaviconColor(hex);
     });
 
     const updateGradient = () => {
@@ -361,6 +362,7 @@ function initProfileForm(profile) {
     const themeColor = profile.themeColor || '#ff6b81';
     document.getElementById('input-theme-color').value = themeColor;
     document.documentElement.style.setProperty('--primary-color', themeColor);
+    if (typeof updateFaviconColor === 'function') updateFaviconColor(themeColor);
     
     const bg1 = profile.bgGradient1 || '#f4f6f9';
     const bg2 = profile.bgGradient2 || '#ffe3e8';
