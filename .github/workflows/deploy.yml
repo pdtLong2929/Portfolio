@@ -24,13 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # --- BỔ SUNG CÁC BƯỚC CHO DỰ ÁN NODE.JS/VITE ---
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22 # Sử dụng Node.js 22 LTS mới nhất để tránh cảnh báo (warning)
-          cache: 'npm'
-
       - name: Install dependencies
         run: npm install
 
