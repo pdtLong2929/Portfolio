@@ -2,109 +2,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     await initializeData();
     let appData = await getData();
 
-    // 0. Xử lý Đăng nhập
+    // 0. Xử lý Đăng nhập Firebase
     const loginForm = document.getElementById('login-form');
     const loginSection = document.getElementById('login-section');
     const adminMain = document.getElementById('admin-main');
     const loginError = document.getElementById('login-error');
 
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const user = document.getElementById('login-username').value.trim();
-        const pass = document.getElementById('login-password').value.trim();
-        
-        // Emergency reset code in case you get locked out
-        if (user === 'RESET_ALL' && pass === 'RESET_ALL') {
-            localforage.clear().then(() => location.reload());
-            return;
-        }
-        
-        const validUser = appData.security ? appData.security.username : 'admin';
-        const validPass = appData.security ? appData.security.password : 'admin';
-
-        // Kiểm tra với dữ liệu bảo mật từ IndexedDB
-        if (user === validUser && pass === validPass) {
+    // Theo dõi trạng thái đăng nhập
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            // Đã đăng nhập
             loginSection.style.display = 'none';
             adminMain.style.display = 'flex';
         } else {
-            loginError.classList.remove('hidden');
+            // Chưa đăng nhập
+            loginSection.style.display = 'block';
+            adminMain.style.display = 'none';
         }
     });
 
-    // 0.1 Xử lý Quên mật khẩu
-    const recoverySection = document.getElementById('recovery-section');
-    const forgotPasswordLink = document.getElementById('forgot-password-link');
-    const backToLoginLink = document.getElementById('back-to-login');
-    const recoveryUsernameInput = document.getElementById('recovery-username');
-    const recoveryQuestionDisplay = document.getElementById('recovery-question-display');
-    const btnCheckRecovery = document.getElementById('btn-check-recovery');
-    const btnSubmitRecovery = document.getElementById('btn-submit-recovery');
-    const newPasswordGroup = document.getElementById('new-password-group');
-    const recoveryError = document.getElementById('recovery-error');
-    const recoverySuccess = document.getElementById('recovery-success');
-
-    forgotPasswordLink.addEventListener('click', (e) => {
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        loginSection.style.display = 'none';
-        recoverySection.style.display = 'block';
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-password').value.trim();
+        
+        firebase.auth().signInWithEmailAndPassword(email, pass)
+            .then(() => {
+                loginError.classList.add('hidden');
+                document.getElementById('login-password').value = '';
+            })
+            .catch((error) => {
+                console.error("Lỗi đăng nhập:", error);
+                loginError.textContent = "Sai email hoặc mật khẩu!";
+                loginError.classList.remove('hidden');
+            });
     });
 
-    backToLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        recoverySection.style.display = 'none';
-        loginSection.style.display = 'block';
-        document.getElementById('recovery-form').reset();
-        newPasswordGroup.style.display = 'none';
-        btnCheckRecovery.style.display = 'block';
-        btnSubmitRecovery.style.display = 'none';
-        recoveryError.classList.add('hidden');
-        recoverySuccess.classList.add('hidden');
-        recoveryQuestionDisplay.textContent = "(Nhập Tên đăng nhập trước)";
-    });
-
-    recoveryUsernameInput.addEventListener('blur', () => {
-        if (recoveryUsernameInput.value === appData.security.username) {
-            recoveryQuestionDisplay.textContent = appData.security.recoveryQuestion;
-        } else {
-            recoveryQuestionDisplay.textContent = "(Tên đăng nhập không đúng)";
-        }
-    });
-
-    btnCheckRecovery.addEventListener('click', () => {
-        const answer = document.getElementById('recovery-answer').value;
-        if (recoveryUsernameInput.value === appData.security.username && 
-            answer.trim().toLowerCase() === appData.security.recoveryAnswer.trim().toLowerCase()) {
-            recoveryError.classList.add('hidden');
-            newPasswordGroup.style.display = 'block';
-            btnCheckRecovery.style.display = 'none';
-            btnSubmitRecovery.style.display = 'block';
-            document.getElementById('recovery-new-password').required = true;
-            document.getElementById('recovery-confirm-password').required = true;
-        } else {
-            recoveryError.classList.remove('hidden');
-            recoveryError.textContent = "Sai Tên đăng nhập hoặc Câu trả lời!";
-        }
-    });
-
-    document.getElementById('recovery-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newPassword = document.getElementById('recovery-new-password').value;
-        const confirmPassword = document.getElementById('recovery-confirm-password').value;
-
-        if (newPassword !== confirmPassword) {
-            recoveryError.textContent = "Mật khẩu xác nhận không khớp!";
-            recoveryError.classList.remove('hidden');
-            return;
-        }
-
-        recoveryError.classList.add('hidden');
-        appData.security.password = newPassword;
-        await saveData(appData);
-        recoverySuccess.classList.remove('hidden');
-        setTimeout(() => {
-            backToLoginLink.click();
-        }, 2000);
-    });
+    // 0.1 Xử lý Đăng xuất
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                window.location.reload();
+            });
+        });
+    }
 
     // 1. Khởi tạo dữ liệu lên Form
     initProfileForm(appData.profile);
@@ -309,45 +251,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById('new-exp-end').disabled = false;
     });
 
-    // 7. Xử lý Cập nhật Bảo mật
-    document.getElementById('sec-username').value = appData.security.username;
-    document.getElementById('sec-question').value = appData.security.recoveryQuestion;
-    document.getElementById('sec-answer').value = appData.security.recoveryAnswer;
-
-    document.getElementById('security-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const currentPass = document.getElementById('sec-current-password').value;
-        const newPass = document.getElementById('sec-new-password').value;
-        const confirmPass = document.getElementById('sec-confirm-password').value;
-        const secError = document.getElementById('sec-error');
-
-        // Verify current password
-        if (currentPass !== appData.security.password) {
-            secError.textContent = "Mật khẩu hiện tại không đúng!";
-            secError.classList.remove('hidden');
-            return;
-        }
-
-        // Verify new password match
-        if (newPass && newPass !== confirmPass) {
-            secError.textContent = "Mật khẩu mới không khớp!";
-            secError.classList.remove('hidden');
-            return;
-        }
-
-        secError.classList.add('hidden');
-
-        // Update data
-        appData.security.username = document.getElementById('sec-username').value;
-        appData.security.recoveryQuestion = document.getElementById('sec-question').value;
-        appData.security.recoveryAnswer = document.getElementById('sec-answer').value;
-        if (newPass) {
-            appData.security.password = newPass;
-        }
-
-        saveDataAndNotify(appData);
-        // Clear password fields
-        document.getElementById('sec-current-password').value = '';
         document.getElementById('sec-new-password').value = '';
         document.getElementById('sec-confirm-password').value = '';
     });

@@ -18,57 +18,18 @@
         <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 1.5rem;">Đăng nhập Admin</h2>
         <form id="login-form">
             <div class="form-group">
-                <label>Tên đăng nhập</label>
-                <input type="text" id="login-username" required autocapitalize="off" autocomplete="off">
+                <label>Email Admin</label>
+                <input type="email" id="login-email" required autocapitalize="off" autocomplete="off" placeholder="admin@example.com">
             </div>
             <div class="form-group">
                 <label>Mật khẩu</label>
                 <input type="password" id="login-password" required>
             </div>
-            <div id="login-error" class="alert hidden" style="background: #ff4757; margin-bottom: 15px;">Sai tài khoản hoặc mật khẩu!</div>
+            <div id="login-error" class="alert hidden" style="background: #ff4757; margin-bottom: 15px;">Sai email hoặc mật khẩu!</div>
             <button type="submit" class="btn btn-primary" style="width: 100%;">Đăng nhập</button>
-            <div style="text-align: right; margin-top: 10px;">
-                <a href="#" id="forgot-password-link" style="color: var(--primary-color); font-size: 0.9rem;">Quên mật khẩu?</a>
-            </div>
         </form>
         <div style="text-align: center; margin-top: 1rem;">
             <a href="index.html" style="color: var(--text-muted); font-size: 0.9rem;">&larr; Quay lại trang chủ</a>
-        </div>
-    </div>
-
-    <!-- Recovery Section -->
-    <div class="login-container glass-panel" id="recovery-section" style="display: none;">
-        <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 1.5rem;">Khôi phục mật khẩu</h2>
-        <form id="recovery-form">
-            <div class="form-group">
-                <label>Tên đăng nhập</label>
-                <input type="text" id="recovery-username" required autocapitalize="off" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>Câu hỏi bảo mật</label>
-                <p id="recovery-question-display" style="font-weight: 600; margin-bottom: 10px; color: var(--text-color);">(Nhập Tên đăng nhập trước)</p>
-            </div>
-            <div class="form-group">
-                <label>Câu trả lời</label>
-                <input type="text" id="recovery-answer" required>
-            </div>
-            <div id="new-password-group" style="display: none;">
-                <div class="form-group">
-                    <label>Mật khẩu mới</label>
-                    <input type="password" id="recovery-new-password">
-                </div>
-                <div class="form-group">
-                    <label>Xác nhận mật khẩu mới</label>
-                    <input type="password" id="recovery-confirm-password">
-                </div>
-            </div>
-            <div id="recovery-error" class="alert hidden" style="background: #ff4757; margin-bottom: 15px;">Sai thông tin!</div>
-            <div id="recovery-success" class="alert hidden" style="background: #2ed573; margin-bottom: 15px;">Đã đổi mật khẩu!</div>
-            <button type="button" id="btn-check-recovery" class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">Kiểm tra câu trả lời</button>
-            <button type="submit" id="btn-submit-recovery" class="btn btn-primary" style="width: 100%; display: none;">Đặt lại mật khẩu</button>
-        </form>
-        <div style="text-align: center; margin-top: 1rem;">
-            <a href="#" id="back-to-login" style="color: var(--text-muted); font-size: 0.9rem;">&larr; Quay lại đăng nhập</a>
         </div>
     </div>
 
@@ -81,7 +42,6 @@
                 <li><a href="#" data-target="skills-sec"><i class="fas fa-star"></i> Kỹ năng</a></li>
                 <li><a href="#" data-target="experience-sec"><i class="fas fa-briefcase"></i> Kinh nghiệm</a></li>
                 <li><a href="#" data-target="contact-sec"><i class="fas fa-address-book"></i> Liên hệ</a></li>
-                <li><a href="#" data-target="security-sec"><i class="fas fa-lock"></i> Bảo mật</a></li>
                 <li><a href="index.html" class="back-home"><i class="fas fa-home"></i> Xem trang chủ</a></li>
             </ul>
         </aside>
@@ -224,40 +184,6 @@
                         <button type="submit" class="btn btn-primary">Thêm Liên hệ</button>
                     </form>
                 </div>
-            </section>
-
-            <!-- Security Section -->
-            <section id="security-sec" class="admin-section">
-                <h3>Cài đặt Bảo mật</h3>
-                <form id="security-form">
-                    <div class="form-group">
-                        <label>Tên đăng nhập mới</label>
-                        <input type="text" id="sec-username" required autocapitalize="off" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label>Mật khẩu mới (Để trống nếu không đổi)</label>
-                        <input type="password" id="sec-new-password">
-                    </div>
-                    <div class="form-group">
-                        <label>Xác nhận mật khẩu mới</label>
-                        <input type="password" id="sec-confirm-password">
-                    </div>
-                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
-                    <div class="form-group">
-                        <label>Câu hỏi bảo mật (Dùng khi quên mật khẩu)</label>
-                        <input type="text" id="sec-question" required placeholder="Ví dụ: Tên thú cưng đầu tiên của bạn?">
-                    </div>
-                    <div class="form-group">
-                        <label>Câu trả lời</label>
-                        <input type="text" id="sec-answer" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Mật khẩu hiện tại (Bắt buộc để lưu thay đổi)</label>
-                        <input type="password" id="sec-current-password" required>
-                    </div>
-                    <div id="sec-error" class="alert hidden" style="background: #ff4757; margin-bottom: 15px;">Mật khẩu hiện tại không đúng!</div>
-                    <button type="submit" class="btn btn-primary">Lưu cài đặt bảo mật</button>
-                </form>
             </section>
 
         </main>

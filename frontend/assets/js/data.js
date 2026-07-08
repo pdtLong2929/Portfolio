@@ -26,13 +26,7 @@ const defaultData = {
         { id: 2, icon: "fa-phone", name: "Số điện thoại", value: "0123 456 789", href: "tel:0123 456 789" },
         { id: 3, icon: "fa-facebook", name: "Facebook", value: "Facebook cá nhân", href: "https://facebook.com" },
         { id: 4, icon: "fa-behance", name: "Behance", value: "Portfolio", href: "https://behance.net" }
-    ],
-    security: {
-        username: "admin",
-        password: "admin",
-        recoveryQuestion: "Tên thú cưng đầu tiên của bạn là gì?",
-        recoveryAnswer: "milo"
-    }
+    ]
 };
 
 // Firebase Configuration
@@ -84,12 +78,6 @@ async function getData() {
                     { id: 3, icon: "fa-facebook", name: "Facebook", value: "Facebook", href: data.contact.facebook },
                     { id: 4, icon: "fa-behance", name: "Behance", value: "Behance", href: data.contact.behance }
                 ];
-                shouldSave = true;
-            }
-            
-            // Migration: thêm trường security nếu chưa có
-            if (data && !data.security) {
-                data.security = defaultData.security;
                 shouldSave = true;
             }
 
