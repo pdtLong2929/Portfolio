@@ -14,6 +14,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const toggleLink = document.getElementById('toggle-signup');
     let isSignupMode = false;
 
+    // Kiểm tra URL xem có yêu cầu Đăng ký không
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'signup') {
+        isSignupMode = true;
+        document.querySelector('#login-section h2').textContent = "Đăng ký Tài khoản";
+        btnSubmit.textContent = "Đăng ký ngay";
+        if (toggleLink) toggleLink.innerHTML = 'Đã có tài khoản? <strong>Đăng nhập</strong>';
+    }
+
     // Theo dõi trạng thái đăng nhập
     firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
