@@ -332,10 +332,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById('new-exp-end').disabled = false;
     });
 
-        document.getElementById('sec-new-password').value = '';
-        document.getElementById('sec-confirm-password').value = '';
-    });
-
     // Expose delete functions to global for inline onclick
     window.deleteSkill = (id) => {
         if(confirm('Bạn có chắc chắn muốn xóa?')) {
