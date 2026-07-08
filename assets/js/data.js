@@ -52,25 +52,19 @@ async function initializeData() {
     // Không cần làm gì nhiều, quá trình khởi tạo sẽ do getData quyết định
 }
 
-async function getData() {
+async function getData(uid) {
+    if (!uid) return JSON.parse(JSON.stringify(defaultData));
+    
     return new Promise((resolve) => {
-        db.ref('portfolioData').once('value').then(async (snapshot) => {
+        db.ref(`users/${uid}/portfolioData`).once('value').then(async (snapshot) => {
             let data = snapshot.val();
             let shouldSave = false;
 
-            // Nếu Firebase chưa có dữ liệu (lần đầu tiên chạy sau khi cài Firebase)
             if (!data) {
-                // Thử lấy dữ liệu từ local (dành cho người dùng cũ)
-                const localData = await localforage.getItem('portfolioData');
-                if (localData) {
-                    data = localData;
-                    shouldSave = true; // Sẽ đẩy dữ liệu cũ lên Firebase
-                } else {
-                    data = JSON.parse(JSON.stringify(defaultData));
-                }
+                data = JSON.parse(JSON.stringify(defaultData));
+                shouldSave = true;
             }
 
-            // Migration: nếu contact là object cũ thì chuyển thành dạng mảng
             if (data && data.contact && !Array.isArray(data.contact)) {
                 data.contact = [
                     { id: 1, icon: "fa-envelope", name: "Email", value: data.contact.email, href: `mailto:${data.contact.email}` },
@@ -81,31 +75,26 @@ async function getData() {
                 shouldSave = true;
             }
 
-            // Migration: thay thế ảnh avatar bị lỗi
             if (data && data.profile && data.profile.avatar === "https://via.placeholder.com/150") {
                 data.profile.avatar = "https://ui-avatars.com/api/?name=Nguyễn+Văn+A&background=ff6b81&color=fff&size=150";
                 shouldSave = true;
             }
 
             if (shouldSave) {
-                await saveData(data);
+                await saveData(data, uid);
             }
             resolve(data);
-        }).catch(async (error) => {
+        }).catch((error) => {
             console.error("Firebase read error:", error);
-            // Fallback to local if Firebase fails
-            let localData = await localforage.getItem('portfolioData');
-            resolve(localData || JSON.parse(JSON.stringify(defaultData)));
+            resolve(JSON.parse(JSON.stringify(defaultData)));
         });
     });
 }
 
-async function saveData(data) {
+async function saveData(data, uid) {
+    if (!uid) return;
     try {
-        // Lưu lên Firebase (để mọi người có thể thấy)
-        await db.ref('portfolioData').set(data);
-        // Lưu backup ở local
-        await localforage.setItem('portfolioData', data);
+        await db.ref(`users/${uid}/portfolioData`).set(data);
     } catch (error) {
         console.error("Lỗi khi lưu dữ liệu:", error);
     }

@@ -13,7 +13,18 @@
 </head>
 
 <body>
-    <header>
+    <!-- Landing Page (SaaS Intro) -->
+    <div id="landing-page" style="display: none; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, #f4f6f9 0%, #ffe3e8 100%);">
+        <div class="glass-panel" style="padding: 50px; max-width: 600px;">
+            <h1 style="color: #ff6b81; margin-bottom: 20px; font-size: 2.5rem;">Tạo Portfolio Chuyên Nghiệp</h1>
+            <p style="margin-bottom: 30px; font-size: 1.2rem; color: #555;">Nền tảng miễn phí giúp bạn xây dựng trang CV cá nhân nổi bật, thu hút nhà tuyển dụng chỉ trong 5 phút!</p>
+            <a href="admin.html" class="btn" style="background: #ff6b81; color: white; font-size: 1.2rem; padding: 15px 30px; border-radius: 30px; text-decoration: none; display: inline-block; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);">Tạo Portfolio ngay</a>
+        </div>
+    </div>
+
+    <!-- User Portfolio View -->
+    <div id="portfolio-page" style="display: none;">
+        <header>
         <div class="container">
             <nav>
                 <div class="logo">
@@ -89,7 +100,8 @@
 
     <footer>
         <p>&copy; 2026 Bản quyền thuộc về <span id="footer-name">Loading...</span>.</p>
-    </footer>
+        </footer>
+    </div>
 
     <!-- Scripts -->
     <!-- Firebase SDK -->

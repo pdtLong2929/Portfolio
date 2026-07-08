@@ -1,7 +1,24 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Load dữ liệu từ IndexedDB (thông qua hàm trong data.js)
+    // 1. Get UID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get('user');
+
+    const landingPage = document.getElementById('landing-page');
+    const portfolioPage = document.getElementById('portfolio-page');
+
+    if (!uid) {
+        // Show landing page
+        landingPage.style.display = 'flex';
+        portfolioPage.style.display = 'none';
+        return; // Dừng lại, không tải portfolio
+    } else {
+        landingPage.style.display = 'none';
+        portfolioPage.style.display = 'block';
+    }
+
+    // 2. Load dữ liệu từ Firebase
     await initializeData();
-    const data = await getData();
+    const data = await getData(uid);
     
     if (data) {
         renderProfile(data.profile);

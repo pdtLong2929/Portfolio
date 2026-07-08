@@ -1,44 +1,109 @@
+let appData = null;
+let currentUid = null;
+
 document.addEventListener("DOMContentLoaded", async () => {
     await initializeData();
-    let appData = await getData();
 
-    // 0. Xử lý Đăng nhập Firebase
+    // 0. Xử lý Đăng nhập/Đăng ký Firebase
     const loginForm = document.getElementById('login-form');
     const loginSection = document.getElementById('login-section');
     const adminMain = document.getElementById('admin-main');
     const loginError = document.getElementById('login-error');
+    const loginSuccess = document.getElementById('login-success');
+    const btnSubmit = document.getElementById('btn-login-submit');
+    const toggleLink = document.getElementById('toggle-signup');
+    let isSignupMode = false;
 
     // Theo dõi trạng thái đăng nhập
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
             // Đã đăng nhập
+            currentUid = user.uid;
+            appData = await getData(currentUid);
+            
+            // Khởi tạo dữ liệu lên Form
+            initProfileForm(appData.profile);
+            renderAdminContact(appData.contact);
+            renderAdminSkills(appData.skills);
+            renderAdminExperience(appData.experience);
+
+            // Cập nhật Link chia sẻ
+            const publicLink = `${window.location.origin}/index.html?user=${currentUid}`;
+            document.getElementById('public-link-input').value = publicLink;
+            document.getElementById('btn-view-public').href = `index.html?user=${currentUid}`;
+
             loginSection.style.display = 'none';
             adminMain.style.display = 'flex';
         } else {
             // Chưa đăng nhập
+            currentUid = null;
+            appData = null;
             loginSection.style.display = 'block';
             adminMain.style.display = 'none';
         }
     });
+
+    if (toggleLink) {
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isSignupMode = !isSignupMode;
+            if (isSignupMode) {
+                document.querySelector('#login-section h2').textContent = "Đăng ký Tài khoản";
+                btnSubmit.textContent = "Đăng ký ngay";
+                toggleLink.innerHTML = 'Đã có tài khoản? <strong>Đăng nhập</strong>';
+            } else {
+                document.querySelector('#login-section h2').textContent = "Đăng nhập Admin";
+                btnSubmit.textContent = "Đăng nhập";
+                toggleLink.innerHTML = 'Chưa có tài khoản? <strong>Đăng ký ngay</strong>';
+            }
+            loginError.classList.add('hidden');
+            loginSuccess.classList.add('hidden');
+        });
+    }
 
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value.trim();
         const pass = document.getElementById('login-password').value.trim();
         
-        firebase.auth().signInWithEmailAndPassword(email, pass)
-            .then(() => {
-                loginError.classList.add('hidden');
-                document.getElementById('login-password').value = '';
-            })
-            .catch((error) => {
-                console.error("Lỗi đăng nhập:", error);
-                loginError.textContent = "Sai email hoặc mật khẩu!";
-                loginError.classList.remove('hidden');
-            });
+        btnSubmit.disabled = true;
+        loginError.classList.add('hidden');
+        
+        if (isSignupMode) {
+            firebase.auth().createUserWithEmailAndPassword(email, pass)
+                .then(() => {
+                    loginSuccess.classList.remove('hidden');
+                    setTimeout(() => { btnSubmit.disabled = false; }, 2000);
+                })
+                .catch((error) => {
+                    console.error("Lỗi đăng ký:", error);
+                    if(error.code === 'auth/email-already-in-use') {
+                        loginError.textContent = "Email này đã được sử dụng!";
+                    } else if(error.code === 'auth/weak-password') {
+                        loginError.textContent = "Mật khẩu phải từ 6 ký tự trở lên!";
+                    } else {
+                        loginError.textContent = "Đã xảy ra lỗi khi đăng ký!";
+                    }
+                    loginError.classList.remove('hidden');
+                    btnSubmit.disabled = false;
+                });
+        } else {
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .then(() => {
+                    loginSuccess.classList.remove('hidden');
+                    document.getElementById('login-password').value = '';
+                    btnSubmit.disabled = false;
+                })
+                .catch((error) => {
+                    console.error("Lỗi đăng nhập:", error);
+                    loginError.textContent = "Sai email hoặc mật khẩu!";
+                    loginError.classList.remove('hidden');
+                    btnSubmit.disabled = false;
+                });
+        }
     });
 
-    // 0.1 Xử lý Đăng xuất
+    // 0.1 Xử lý Đăng xuất & Copy link
     const btnLogout = document.getElementById('btn-logout');
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
@@ -48,11 +113,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 1. Khởi tạo dữ liệu lên Form
-    initProfileForm(appData.profile);
-    renderAdminContact(appData.contact);
-    renderAdminSkills(appData.skills);
-    renderAdminExperience(appData.experience);
+    const btnCopyLink = document.getElementById('btn-copy-link');
+    if (btnCopyLink) {
+        btnCopyLink.addEventListener('click', () => {
+            const linkInput = document.getElementById('public-link-input');
+            linkInput.select();
+            document.execCommand("copy");
+            btnCopyLink.textContent = "Đã copy!";
+            setTimeout(() => {
+                btnCopyLink.textContent = "Copy Link";
+            }, 2000);
+        });
+    }
 
     // 2. Chuyển đổi các Tab
     const menuLinks = document.querySelectorAll('.admin-menu a[data-target]');
@@ -391,7 +463,7 @@ function renderAdminExperience(experience) {
 async function saveDataAndNotify(data) {
     const alertBox = document.getElementById('alert-message');
     try {
-        await saveData(data); // Call from data.js
+        await saveData(data, currentUid); // Call from data.js
         alertBox.textContent = 'Đã lưu dữ liệu thành công!';
         alertBox.classList.remove('hidden', 'error');
         setTimeout(() => {
@@ -399,7 +471,7 @@ async function saveDataAndNotify(data) {
         }, 3000);
     } catch (e) {
         console.error("Lỗi khi lưu dữ liệu:", e);
-        alertBox.textContent = 'Lỗi lưu dữ liệu! Kích thước file vẫn quá lớn so với giới hạn của IndexedDB.';
+        alertBox.textContent = 'Lỗi lưu dữ liệu!';
         alertBox.classList.remove('hidden');
         alertBox.classList.add('error');
         setTimeout(() => {
