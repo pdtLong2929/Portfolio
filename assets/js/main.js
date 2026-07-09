@@ -21,31 +21,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getData(uid);
     
     if (data) {
+        // 1. Inject Template HTML
+        const templateName = (data.profile && data.profile.template) ? data.profile.template : 'classic';
+        const templateHTML = window.PortfolioTemplates[templateName] || window.PortfolioTemplates['classic'];
+        portfolioPage.innerHTML = templateHTML;
+
+        // 2. Populate Data
         renderProfile(data.profile);
         renderSkills(data.skills);
         renderExperience(data.experience);
         renderContact(data.contact);
+
+        // 3. Rebind UI Events (Mobile Menu)
+        bindUIEvents();
     }
 
-    // 2. Animate skill bars on scroll
+    // 4. Animate skill bars on scroll
     window.addEventListener('scroll', animateSkills);
+});
 
-    // 3. Mobile menu toggle
+function bindUIEvents() {
     const mobileBtn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
     if (mobileBtn && navLinks) {
         mobileBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
-        
-        // Hide menu when clicking a link
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
             });
         });
     }
-});
+}
 
 function renderProfile(profile) {
     document.getElementById('profile-name').textContent = profile.name;

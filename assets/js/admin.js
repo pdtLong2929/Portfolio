@@ -311,6 +311,17 @@ function initProfileForm(profile) {
     document.getElementById('input-title').value = profile.title || '';
     document.getElementById('input-about').value = profile.about || '';
     
+    const template = profile.template || 'classic';
+    document.querySelectorAll('.theme-card').forEach(card => {
+        if (card.dataset.template === template) {
+            card.style.borderColor = 'var(--primary-color)';
+            card.querySelector('.active-badge').style.display = 'flex';
+        } else {
+            card.style.borderColor = '#ddd';
+            card.querySelector('.active-badge').style.display = 'none';
+        }
+    });
+    
     const themeColor = profile.themeColor || '#ff6b81';
     document.getElementById('input-theme-color').value = themeColor;
     document.documentElement.style.setProperty('--primary-color', themeColor);
@@ -417,7 +428,7 @@ async function saveDataAndNotify(data) {
     try {
         await saveData(data, currentUid); // Call from data.js
         alertBox.textContent = 'Đã lưu dữ liệu thành công!';
-        alertBox.classList.remove('hidden', 'error');
+        alertBox.classList.remove('hidden');
         setTimeout(() => {
             alertBox.classList.add('hidden');
         }, 3000);
@@ -431,3 +442,24 @@ async function saveDataAndNotify(data) {
         }, 5000);
     }
 }
+
+// 7. Template Selection Handling
+document.querySelectorAll('.theme-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const selectedTemplate = this.dataset.template;
+        
+        // Update UI
+        document.querySelectorAll('.theme-card').forEach(c => {
+            c.style.borderColor = '#ddd';
+            c.querySelector('.active-badge').style.display = 'none';
+        });
+        this.style.borderColor = 'var(--primary-color)';
+        this.querySelector('.active-badge').style.display = 'flex';
+        
+        // Save to Firebase
+        if (typeof appData !== 'undefined' && appData) {
+            appData.profile.template = selectedTemplate;
+            saveDataAndNotify(appData);
+        }
+    });
+});

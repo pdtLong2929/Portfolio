@@ -36,6 +36,7 @@
             <h2 class="admin-title">Admin Panel</h2>
             <ul class="admin-menu">
                 <li><a href="#" class="active" data-target="profile-sec"><i class="fas fa-user"></i> Thông tin cá nhân</a></li>
+                <li><a href="#" data-target="theme-sec"><i class="fas fa-paint-brush"></i> Giao diện</a></li>
                 <li><a href="#" data-target="skills-sec"><i class="fas fa-star"></i> Kỹ năng</a></li>
                 <li><a href="#" data-target="experience-sec"><i class="fas fa-briefcase"></i> Kinh nghiệm</a></li>
                 <li><a href="#" data-target="contact-sec"><i class="fas fa-address-book"></i> Liên hệ</a></li>
@@ -117,6 +118,27 @@
                     </div>
                     <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Lưu thay đổi</button>
                 </form>
+            </section>
+
+            <!-- Theme Section -->
+            <section id="theme-sec" class="admin-section">
+                <h3>Giao diện (Templates)</h3>
+                <p style="margin-bottom: 15px; color: #555;">Chọn một giao diện phù hợp với phong cách của bạn.</p>
+                <div class="theme-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                    
+                    <div class="theme-card" data-template="classic" style="border: 2px solid var(--primary-color); border-radius: 10px; overflow: hidden; cursor: pointer; position: relative;">
+                        <div style="background: #f4f4f4; height: 120px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999;">Classic (Mặc định)</div>
+                        <div style="padding: 10px; text-align: center; font-weight: bold; background: #fff;">Classic</div>
+                        <div class="active-badge" style="position: absolute; top: 10px; right: 10px; background: var(--primary-color); color: #fff; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-check"></i></div>
+                    </div>
+
+                    <div class="theme-card" data-template="minimal" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative;">
+                        <div style="background: #fafafa; height: 120px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999; border-bottom: 1px solid #eee;">Minimal (Tối giản)</div>
+                        <div style="padding: 10px; text-align: center; font-weight: bold; background: #fff;">Minimal</div>
+                        <div class="active-badge" style="display: none; position: absolute; top: 10px; right: 10px; background: var(--primary-color); color: #fff; border-radius: 50%; width: 25px; height: 25px; align-items: center; justify-content: center;"><i class="fas fa-check"></i></div>
+                    </div>
+
+                </div>
             </section>
 
             <!-- Skills Section -->
