@@ -17,20 +17,13 @@
     <div class="login-container glass-panel" id="login-section">
         <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 1.5rem;">Đăng nhập Admin</h2>
         <form id="login-form">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="login-email" required autocapitalize="off" autocomplete="off" placeholder="user@example.com">
-            </div>
-            <div class="form-group">
-                <label>Mật khẩu</label>
-                <input type="password" id="login-password" required>
-            </div>
-            <div id="login-error" class="alert hidden" style="background: #ff4757; margin-bottom: 15px;">Sai email hoặc mật khẩu!</div>
+            <p style="text-align: center; margin-bottom: 20px; color: #555;">Đăng nhập để quản lý và chỉnh sửa Portfolio của bạn</p>
+            <div id="login-error" class="alert hidden" style="background: #ff4757; margin-bottom: 15px;">Đã xảy ra lỗi!</div>
             <div id="login-success" class="alert hidden" style="background: #2ed573; margin-bottom: 15px;">Thành công! Đang chuyển hướng...</div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;" id="btn-login-submit">Đăng nhập</button>
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="#" id="toggle-signup" style="color: var(--primary-color); font-size: 0.9rem;">Chưa có tài khoản? <strong>Đăng ký ngay</strong></a>
-            </div>
+            <button type="button" class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #333; border: 1px solid #ccc;" id="btn-google-login">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo" style="width: 20px; height: 20px;">
+                Tiếp tục với Google
+            </button>
         </form>
         <div style="text-align: center; margin-top: 1rem;">
             <a href="index.html" style="color: var(--text-muted); font-size: 0.9rem;">&larr; Quay lại trang chủ</a>

@@ -10,19 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const adminMain = document.getElementById('admin-main');
     const loginError = document.getElementById('login-error');
     const loginSuccess = document.getElementById('login-success');
-    const btnSubmit = document.getElementById('btn-login-submit');
-    const toggleLink = document.getElementById('toggle-signup');
-    let isSignupMode = false;
-
-    // Kiểm tra URL xem có yêu cầu Đăng ký không
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('mode') === 'signup') {
-        isSignupMode = true;
-        document.querySelector('#login-section h2').textContent = "Đăng ký Tài khoản";
-        btnSubmit.textContent = "Đăng ký ngay";
-        if (toggleLink) toggleLink.innerHTML = 'Đã có tài khoản? <strong>Đăng nhập</strong>';
-    }
-
+    const btnGoogleLogin = document.getElementById('btn-google-login');
     // Theo dõi trạng thái đăng nhập
     firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
@@ -51,66 +39,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             adminMain.style.display = 'none';
         }
     });
-
-    if (toggleLink) {
-        toggleLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            isSignupMode = !isSignupMode;
-            if (isSignupMode) {
-                document.querySelector('#login-section h2').textContent = "Đăng ký Tài khoản";
-                btnSubmit.textContent = "Đăng ký ngay";
-                toggleLink.innerHTML = 'Đã có tài khoản? <strong>Đăng nhập</strong>';
-            } else {
-                document.querySelector('#login-section h2').textContent = "Đăng nhập Admin";
-                btnSubmit.textContent = "Đăng nhập";
-                toggleLink.innerHTML = 'Chưa có tài khoản? <strong>Đăng ký ngay</strong>';
-            }
+    if (btnGoogleLogin) {
+        btnGoogleLogin.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            btnGoogleLogin.disabled = true;
             loginError.classList.add('hidden');
-            loginSuccess.classList.add('hidden');
+            
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    loginSuccess.classList.remove('hidden');
+                    btnGoogleLogin.disabled = false;
+                })
+                .catch((error) => {
+                    console.error("Lỗi đăng nhập Google:", error);
+                    loginError.textContent = "Đăng nhập thất bại: " + error.message;
+                    loginError.classList.remove('hidden');
+                    btnGoogleLogin.disabled = false;
+                });
         });
     }
-
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
-        const pass = document.getElementById('login-password').value.trim();
-        
-        btnSubmit.disabled = true;
-        loginError.classList.add('hidden');
-        
-        if (isSignupMode) {
-            firebase.auth().createUserWithEmailAndPassword(email, pass)
-                .then(() => {
-                    loginSuccess.classList.remove('hidden');
-                    setTimeout(() => { btnSubmit.disabled = false; }, 2000);
-                })
-                .catch((error) => {
-                    console.error("Lỗi đăng ký:", error);
-                    if(error.code === 'auth/email-already-in-use') {
-                        loginError.textContent = "Email này đã được sử dụng!";
-                    } else if(error.code === 'auth/weak-password') {
-                        loginError.textContent = "Mật khẩu phải từ 6 ký tự trở lên!";
-                    } else {
-                        loginError.textContent = "Đã xảy ra lỗi khi đăng ký!";
-                    }
-                    loginError.classList.remove('hidden');
-                    btnSubmit.disabled = false;
-                });
-        } else {
-            firebase.auth().signInWithEmailAndPassword(email, pass)
-                .then(() => {
-                    loginSuccess.classList.remove('hidden');
-                    document.getElementById('login-password').value = '';
-                    btnSubmit.disabled = false;
-                })
-                .catch((error) => {
-                    console.error("Lỗi đăng nhập:", error);
-                    loginError.textContent = "Sai email hoặc mật khẩu!";
-                    loginError.classList.remove('hidden');
-                    btnSubmit.disabled = false;
-                });
-        }
-    });
 
     // 0.1 Xử lý Đăng xuất & Copy link
     const btnLogout = document.getElementById('btn-logout');
