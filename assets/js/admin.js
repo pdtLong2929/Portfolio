@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 2.1 Xử lý xem trước ảnh đại diện (Preview Avatar)
-    let currentAvatarDataUrl = appData.profile.avatar || '';
+    let currentAvatarDataUrl = '';
     document.getElementById('input-avatar-file').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 2.1.1 Xử lý xem trước Logo
-    let currentLogoDataUrl = appData.profile.logo || 'assets/img/logo.png';
+    let currentLogoDataUrl = 'assets/img/logo.png';
     document.getElementById('input-logo-file').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 2.2 Xử lý xem trước video giới thiệu
-    let currentVideoDataUrl = appData.profile.videoUrl || '';
+    let currentVideoDataUrl = '';
     document.getElementById('input-video-file').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 2.3 Xử lý tải lên CV
-    let currentCvDataUrl = appData.profile.cvUrl || '';
+    let currentCvDataUrl = '';
     document.getElementById('input-cv-file').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -310,6 +310,11 @@ function initProfileForm(profile) {
     document.getElementById('input-name').value = profile.name || '';
     document.getElementById('input-title').value = profile.title || '';
     document.getElementById('input-about').value = profile.about || '';
+    
+    currentAvatarDataUrl = profile.avatar || '';
+    currentLogoDataUrl = profile.logo || 'assets/img/logo.png';
+    currentVideoDataUrl = profile.videoUrl || '';
+    currentCvDataUrl = profile.cvUrl || '';
     
     const template = profile.template || 'classic';
     document.querySelectorAll('.theme-card').forEach(card => {
